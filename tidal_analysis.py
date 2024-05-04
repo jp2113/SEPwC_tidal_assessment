@@ -1,24 +1,27 @@
 #!/usr/bin/env python3
 
 # import the modules you need here
-#import argparse
+import argparse
 import numpy as np
 import pandas as pd
 import glob
 
+# Opens a specified file, formats columns as needed, and removes uneeded data
 def read_tidal_data(filename):
-    #Reads the data in, seperates the columns by spaces, skips rows 0-10, and adds in appropriate names for each row
-    #References: https://geo-python-site.readthedocs.io/en/latest/notebooks/L5/exploring-data-using-pandas.html
-    data = pd.read_csv(filename, sep=r'\s+', skiprows=[0,1,2,3,4,5,6,7,8,9,10],names =['Cycle', 'Date', 'Time', 'Sea Level', 'Residual'])
-    data['datetime'] = pd.to_datetime(data['Date'] + ' ' + data['Time'])
-    #Combines columns 'date' and 'time', to form datetimes variable
-    data['datetime'] = pd.to_datetime(data['Date'] + " " +  data['Time'])
-    #Adds in a seperate row for the new variable 'datetime'
-    data = data.set_index('datetime')
+# Removes unneeded data
+    tidal_data = pd.read_csv(filename , sep=r"\s+", skiprows=[0,1,2,3,4,5,6,7,8,10])
+# Renames column to 'Sea Level'
+    tidal_data = tidal_data.rename(columns={tidal_data.columns[3] : 'Sea Level'})
+# Amalgamating the Date and Time column into one
+    tidal_data["Datetime"] = pd.to_datetime(tidal_data['Date'] + ' ' + tidal_data['Time'])
+    tidal_data = tidal_data.set_index("Datetime")
+# Replaces any value containing M,N,T with NaN, in the 'Sea Level' column
+    tidal_data.replace(to_replace=".*M$",value={"Sea Level": np.nan}, regex=True, inplace=True)
+    tidal_data.replace(to_replace=".*N$",value={"Sea Level": np.nan}, regex=True, inplace=True)
+    tidal_data.replace(to_replace=".*T$",value={"Sea Level": np.nan}, regex=True, inplace=True)
 
     
-
-    return data
+    return tidal_data
 
 
 def extract_single_year_remove_mean(year, data):
@@ -44,30 +47,22 @@ def tidal_analysis(data, constituents, start_datetime):
 def get_longest_contiguous_data(data):
     
     return 
-
-#station =input("Which station would you like to use? Aberdeen, Whitby, or Dover: ")
-#path = '/Users/joshuaproctor/Documents/SEPwC_tidal_assessment/data/' + (station)
-#files = glob.glob(path + '/*.txt')
-#for f in files:
-#    print (read_tidal_data(f))
    
     
-
-
-#if __name__ == '__main__':
-   # parser = argparse.ArgumentParser(
-       #              prog="UK Tidal analysis",
-        #             description="Calculate tidal constiuents and RSL from tide gauge data",
-         #            epilog="Copyright 2024, Jon Hill"
-          #           )
-    #parser.add_argument("directory",
-     #               help="the directory containing txt files with data")
-    #parser.add_argument('-v', '--verbose',
-     #               action='store_true',
-      #              default=False,
-       #             help="Print progress")
-    #args = parser.parse_args()
-    #dirname = args.directory
-    #verbose = args.verbose
+if __name__ == '__main__': 
+    parser = argparse.ArgumentParser(
+                     prog="UK Tidal analysis",
+                     description="Calculate tidal constiuents and RSL from tide gauge data",
+                     epilog="Copyright 2024, Jon Hill"
+                     )
+    parser.add_argument("directory",
+                    help="the directory containing txt files with data")
+    parser.add_argument('-v', '--verbose',
+                   action='store_true',
+                    default=False,
+                    help="Print progress")
+    args = parser.parse_args()
+    dirname = args.directory
+    verbose = args.verbose
 
 
