@@ -19,10 +19,14 @@ def read_tidal_data(filename):
     tidal_data.replace(to_replace=".*M$",value={"Sea Level": np.nan}, regex=True, inplace=True)
     tidal_data.replace(to_replace=".*N$",value={"Sea Level": np.nan}, regex=True, inplace=True)
     tidal_data.replace(to_replace=".*T$",value={"Sea Level": np.nan}, regex=True, inplace=True)
-
     
     return tidal_data
 
+#data = input("Which station would you like to see tidal analysis for: ")
+#path = '/Users/joshuaproctor/Documents/SEPwC_tidal_assessment/data/' + data
+#files = glob.glob(path + '/*.txt')
+#for f in files:
+#    print (read_tidal_data(f))
 
 def extract_single_year_remove_mean(year, data):
    
@@ -64,5 +68,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
     dirname = args.directory
     verbose = args.verbose
+    
+print(read_tidal_data("data/1947ABE.txt"))
 
 
