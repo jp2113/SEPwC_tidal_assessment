@@ -6,9 +6,6 @@ import numpy as np
 import pandas as pd
 import glob
 
-tidal_file = "data/1947ABE.txt"
-tidal_file2 = 'data/1946ABE.txt'
-
 
 # Opens a specified file, formats columns as needed, and removes uneeded data
 def read_tidal_data(filename):
@@ -24,11 +21,9 @@ def read_tidal_data(filename):
     data.replace(to_replace=".*M$",value={"Sea Level": np.nan}, regex=True, inplace=True)
     data.replace(to_replace=".*N$",value={"Sea Level": np.nan}, regex=True, inplace=True)
     data.replace(to_replace=".*T$",value={"Sea Level": np.nan}, regex=True, inplace=True)
-    print (data)
     
     return data
 
-read_tidal_data(tidal_file)
 
 def extract_single_year_remove_mean(year, data):
     data['Date'] = pd.DatetimeIndex(data['Date']).year
@@ -51,7 +46,10 @@ def extract_section_remove_mean(start, end, data):
     return data
 
 def join_data(data1, data2):
-    
+    formatted_data1 = read_tidal_data(data1)
+    formatted_data2 = read_tidal_data(data2)
+    tidal_data_set = pd.merge(formatted_data1, formatted_data2)
+    print(tidal_data_set)
     
     return 
 
@@ -66,6 +64,11 @@ def tidal_analysis(data, constituents, start_datetime):
 def get_longest_contiguous_data(data):
     
     return 
+
+tidal_file = 'data/1947ABE.txt'
+tidal_file2 = 'data/1946ABE.txt'
+
+join_data(tidal_file, tidal_file2)
 
 
 if __name__ == '__main__': 
