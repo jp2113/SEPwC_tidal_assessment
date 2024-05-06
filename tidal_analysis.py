@@ -27,7 +27,7 @@ def read_tidal_data(filename):
     data.replace(to_replace=".*M$",value={"Sea Level": np.nan}, regex=True, inplace=True)
     data.replace(to_replace=".*N$",value={"Sea Level": np.nan}, regex=True, inplace=True)
     data.replace(to_replace=".*T$",value={"Sea Level": np.nan}, regex=True, inplace=True)
-    print(data)
+    #print(data)
     
     return(data)
 
@@ -39,16 +39,16 @@ read_tidal_data(filename)
 def extract_single_year_remove_mean(year, data):
 # Creates a global variable for viewing purposes
     global year_data
-# Sets start and endpoints of the year
+# Sets start and end points of the year
     year_start = str(year) + "0101"
     year_end = str(year) + "1231"
 # Siphones that year from the df
     year_data = data.loc[year_start:year_end, ['Sea Level']]
-# Sets all data in the new df as numeric
+# Sets all data in the new df as numeric values
     year_data = year_data.apply(pd.to_numeric, errors='raise')
 # Calculates mean and subtracts from all data points
     year_data = (year_data)-(year_data.mean())
-    print(year_data)
+    #print(year_data)
     
     return (year_data)
 
@@ -57,11 +57,22 @@ extract_single_year_remove_mean(1947, data)
 
 
 def extract_section_remove_mean(start, end, data):
-    #year_data = data.loc[year_data_start:year_data_end, ['Tide']]
-    #mmm = np.mean(year_data['Sea Level'])
-    #year_data['Sea Level'] -= mmm
+# Creates a global variable for viewing purposes
+    global section_data
+# Sets start and end points of the section
+    section_start = str(start)
+    section_end = str(end)
+# Siphones that section from the df
+    section_data = data.loc[section_start:section_end, ['Sea Level']]
+# Sets all data in the new df as numeric values
+    section_data = section_data.apply(pd.to_numeric, errors='raise')
+# Calculates mean and subtracts from all data points
+    section_data = (section_data)-(section_data.mean())
+    print(section_data)
     
     return data
+
+extract_section_remove_mean(19470501, 19471031, data)
 
 
 
