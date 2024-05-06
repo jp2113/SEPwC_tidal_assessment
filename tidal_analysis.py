@@ -4,26 +4,27 @@
 import argparse
 import numpy as np
 import pandas as pd
-import glob
+#import glob
 
-
-filename = "data/1947ABE.txt"
+filename1 = "data/1946ABE.txt"
+filename2 = "data/1947ABE.txt"
 
 
 # Opens a specified file, formats columns as needed, and removes uneeded data
 def read_tidal_data(filename):
-# Creates a gloobal variable 
+    
+  # Creates a gloobal variable 
     global data
-# Removes unneeded data
+  # Removes unneeded data - 
     data = pd.read_csv(filename , sep=r"\s+", skiprows=[0,1,2,3,4,5,6,7,8,10])
-# Amalgamating the Date and Time column into one
+  # Amalgamates the Date and Time column into one
     data["Datetime"] = pd.to_datetime(data['Date'] + ' ' + data['Time'])
     data = data.set_index("Datetime")
-# Renames column to 'Sea Level'
+  # Renames column to 'Sea Level'
     data = data.rename(columns={data.columns[3] : 'Sea Level'})
-# Removes uneeded columns
+  # Removes uneeded columns (https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.drop.html)
     data = data.drop(columns = ['Date','Time'])
-# Replaces any value containing M,N,T with NaN, in the 'Sea Level' column
+  # Replaces any value containing M,N,T with NaN, in the 'Sea Level' column
     data.replace(to_replace=".*M$",value={"Sea Level": np.nan}, regex=True, inplace=True)
     data.replace(to_replace=".*N$",value={"Sea Level": np.nan}, regex=True, inplace=True)
     data.replace(to_replace=".*T$",value={"Sea Level": np.nan}, regex=True, inplace=True)
@@ -31,60 +32,70 @@ def read_tidal_data(filename):
     
     return(data)
 
-read_tidal_data(filename)
+read_tidal_data(filename2)
 
 
 
-# Creates new df with specified year, and subtracts the mean from each data point
+# Siphones data of a specific year from the df, and subtracts the mean from each data point
 def extract_single_year_remove_mean(year, data):
-# Creates a global variable for viewing purposes
+    
+  # Creates a global variable for viewing purposes
     global year_data
-# Sets start and end points of the year
+  # Sets start and end points of the year
     year_start = str(year) + "0101"
     year_end = str(year) + "1231"
-# Siphones that year from the df
+  # Siphones that year from the df (https://www.codecademy.com/resources/docs/pandas/dataframe/loc)
     year_data = data.loc[year_start:year_end, ['Sea Level']]
-# Sets all data in the new df as numeric values
+  # Sets all data in the new df as numeric values (https://saturncloud.io/blog/calculating-averages-of-multiple-columns-ignoring-nan-a-guide-for-data-scientists/#:~:text=By%20setting%20the%20skipna%3DTrue,columns%20while%20ignoring%20NaN%20values.)
     year_data = year_data.apply(pd.to_numeric, errors='raise')
-# Calculates mean and subtracts from all data points
+  # Calculates mean and subtracts from all data points (https://stackoverflow.com/questions/35169368/subtract-every-column-in-dataframe-with-the-mean-of-that-column-with-python)
     year_data = (year_data)-(year_data.mean())
     #print(year_data)
     
-    return (year_data)
+    return year_data
 
 extract_single_year_remove_mean(1947, data)
 
 
 
+# Siphones data of a specific time period from the df, and subtracts the mean from each data point
 def extract_section_remove_mean(start, end, data):
-# Creates a global variable for viewing purposes
+    
+  # Creates a global variable for viewing purposes
     global section_data
-# Sets start and end points of the section
+  # Sets start and end points of the section
     section_start = str(start)
     section_end = str(end)
-# Siphones that section from the df
+  # Siphones that section from the df (https://www.codecademy.com/resources/docs/pandas/dataframe/loc)
     section_data = data.loc[section_start:section_end, ['Sea Level']]
-# Sets all data in the new df as numeric values
+  # Sets all data in the new df as numeric values (https://saturncloud.io/blog/calculating-averages-of-multiple-columns-ignoring-nan-a-guide-for-data-scientists/#:~:text=By%20setting%20the%20skipna%3DTrue,columns%20while%20ignoring%20NaN%20values.)
     section_data = section_data.apply(pd.to_numeric, errors='raise')
-# Calculates mean and subtracts from all data points
+  # Calculates mean and subtracts from all data points (https://stackoverflow.com/questions/35169368/subtract-every-column-in-dataframe-with-the-mean-of-that-column-with-python)
     section_data = (section_data)-(section_data.mean())
-    print(section_data)
+    #print(section_data)
     
-    return data
+    return section_data
 
 extract_section_remove_mean(19470501, 19471031, data)
 
 
 
-
+# Reads and formats the two dfs, and joins them along the x axis
 def join_data(data1, data2):
-    #formatted_data1 = read_tidal_data(data1)
-    #formatted_data2 = read_tidal_data(data2)
-    #tidal_data_set = pd.merge(formatted_data1, formatted_data2)
-    #print(tidal_data_set)
     
-    return 
+# Creates a global variable for viewing purposes
+    global joined_file
+# Formats the files ready for joining
+    format_1 = read_tidal_data(data1)
+    format_2 = read_tidal_data(data2)
+    files = [format_1, format_2]
+# Joins the formatted files along the x axis (https://www.geeksforgeeks.org/how-to-combine-two-dataframe-in-python-pandas/)
+    joined_file = pd.concat(files)
+    print (joined_file)
 
+    return joined_file
+
+join_data(filename1, filename2)
 
 
 
