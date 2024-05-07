@@ -3,16 +3,20 @@
 #!/usr/bin/env python3
 
 # import the modules you need here
-#import matplotlib.pyplot as plt
-#import wget
+
+
 #import os
-#import uptide
-#import pytz
+import argparse
+#import datetime
 #import math
 #import glob
-import argparse
+#import wget
+#import matplotlib.pyplot as plt
+#import uptide
+#import pytz
 import pandas as pd
 import numpy as np
+
 
 
 # Sets data being used temporarily
@@ -22,8 +26,6 @@ FILENAME2 = "data/1947ABE.txt"
 
 def read_tidal_data(filename):
     """Opens a specified file, formats columns as needed, and removes uneeded data"""
-#Creates a gloobal variable
-    #global data
 # Reads in a dataframe and removes uneeded rows
     data = pd.read_csv(filename, sep = r"\s+", skiprows = [0,1,2,3,4,5,6,7,8,10])
 # Renames column to 'Sea Level'
@@ -46,7 +48,7 @@ def extract_single_year_remove_mean(year, data):
     year_string_start = str(year) + "0101"
     year_string_end = str(year) + "1231"
 # Siphones that year from the df
-#(https://www.codecademy.com/resources/docs/pandas/dataframe/loc)
+# (https://www.codecademy.com/resources/docs/pandas/dataframe/loc)
     year_data = data.loc[year_string_start:year_string_end, ['Sea Level']]
 # Sets all data in the new df as numeric values
     year_data = year_data.apply(pd.to_numeric, errors='raise')
@@ -61,7 +63,7 @@ def extract_section_remove_mean(start, end, data):
     section_start = str(start)
     section_end = str(end)
 # Siphones that section from the df
-#(https://www.codecademy.com/resources/docs/pandas/dataframe/loc)
+# (https://www.codecademy.com/resources/docs/pandas/dataframe/loc)
     section_data = data.loc[section_start:section_end, ['Sea Level']]
 # Sets all data in the new df as numeric values
     section_data = section_data.apply(pd.to_numeric, errors='raise')
@@ -73,8 +75,9 @@ def extract_section_remove_mean(start, end, data):
 def join_data(data1, data2):
     """Joins dfs along the x axis"""
 # Joins the formatted files along the x axis
-#(https://www.geeksforgeeks.org/how-to-combine-two-dataframe-in-python-pandas/)
+# (https://www.geeksforgeeks.org/how-to-combine-two-dataframe-in-python-pandas/)
     join_file = pd.concat([data1, data2])
+# Sets the files in chronological order
     join_file = join_file.sort_values(by='Datetime', ascending=True)
     return join_file
 
@@ -82,6 +85,7 @@ def join_data(data1, data2):
 #def sea_level_rise(data):
 #    """a"""
 #    return
+
 
 
 #def tidal_analysis(data, constituents, start_datetime):
