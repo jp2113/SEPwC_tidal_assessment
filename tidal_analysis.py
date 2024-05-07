@@ -36,6 +36,48 @@ read_tidal_data(filename2)
 
 
 
+# Siphones data of a specific year from the df, and subtracts the mean from each data point
+def extract_single_year_remove_mean(year, data):
+    
+  # Creates a global variable for viewing purposes
+    global year_data
+  # Sets start and end points of the year
+    year_start = str(year) + "0101"
+    year_end = str(year) + "1231"
+  # Siphones that year from the df (https://www.codecademy.com/resources/docs/pandas/dataframe/loc)
+    year_data = data.loc[year_start:year_end, ['Sea Level']]
+  # Sets all data in the new df as numeric values (https://saturncloud.io/blog/calculating-averages-of-multiple-columns-ignoring-nan-a-guide-for-data-scientists/#:~:text=By%20setting%20the%20skipna%3DTrue,columns%20while%20ignoring%20NaN%20values.)
+    year_data = year_data.apply(pd.to_numeric, errors='raise')
+  # Calculates mean and subtracts from all data points (https://stackoverflow.com/questions/35169368/subtract-every-column-in-dataframe-with-the-mean-of-that-column-with-python)
+    year_data = (year_data)-(year_data['Sea Level'].mean())
+    #print(year_data)
+    
+    return year_data
+
+extract_single_year_remove_mean(1947, data)
+
+
+
+# Siphones data of a specific time period from the df, and subtracts the mean from each data point
+def extract_section_remove_mean(start, end, data):
+    
+  # Creates a global variable for viewing purposes
+    global section_data
+  # Sets start and end points of the section
+    section_start = str(start)
+    section_end = str(end)
+  # Siphones that section from the df (https://www.codecademy.com/resources/docs/pandas/dataframe/loc)
+    section_data = data.loc[section_start:section_end, ['Sea Level']]
+  # Sets all data in the new df as numeric values (https://saturncloud.io/blog/calculating-averages-of-multiple-columns-ignoring-nan-a-guide-for-data-scientists/#:~:text=By%20setting%20the%20skipna%3DTrue,columns%20while%20ignoring%20NaN%20values.)
+    section_data = section_data.apply(pd.to_numeric, errors='raise')
+  # Calculates mean and subtracts from all data points (https://stackoverflow.com/questions/35169368/subtract-every-column-in-dataframe-with-the-mean-of-that-column-with-python)
+    section_data = (section_data)-(section_data['Sea Level'].mean())
+    #print(section_data)
+    
+    return section_data
+
+extract_section_remove_mean(19470101, 19471231, data)
+
 
 
 # Reads and formats the two dfs, and joins them along the x axis
@@ -48,9 +90,10 @@ def join_data(data1, data2):
     format_2 = read_tidal_data(data2)
     files = [format_1, format_2]
 # Joins the formatted files along the x axis (https://www.geeksforgeeks.org/how-to-combine-two-dataframe-in-python-pandas/)
+    #joined_file = (format_1.combine_first(format_2))
     joined_file = pd.concat(files)
     #print (joined_file)
-
+    
     return joined_file
 
 join_data(filename1, filename2)
@@ -58,6 +101,8 @@ join_data(filename1, filename2)
 
 
 def sea_level_rise(data):
+    
+    
     return 
 
 
