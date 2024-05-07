@@ -15,8 +15,6 @@ import pandas as pd
 import numpy as np
 
 
-
-
 # Sets data being used temporarily
 FILENAME1 = "data/1946ABE.txt"
 FILENAME2 = "data/1947ABE.txt"
@@ -42,7 +40,6 @@ def read_tidal_data(filename):
     return data
 
 
-
 def extract_single_year_remove_mean(year, data):
     """Siphones data of a specific year from the df, and subtracts the mean from each row"""
 # Sets start and end points of the year
@@ -56,7 +53,6 @@ def extract_single_year_remove_mean(year, data):
 # Calculates mean and subtracts from all data points
     year_data = (year_data)-(year_data['Sea Level'].mean())
     return year_data
-
 
 
 def extract_section_remove_mean(start, end, data):
@@ -74,7 +70,6 @@ def extract_section_remove_mean(start, end, data):
     return section_data
 
 
-
 def join_data(data1, data2):
     """Joins dfs along the x axis"""
 # Joins the formatted files along the x axis
@@ -84,23 +79,19 @@ def join_data(data1, data2):
     return join_file
 
 
-
-def sea_level_rise(data):
-    """a"""
-    return
-
+#def sea_level_rise(data):
+#    """a"""
+#    return
 
 
-def tidal_analysis(data, constituents, start_datetime):
-    """a"""
-    return
+#def tidal_analysis(data, constituents, start_datetime):
+#    """a"""
+#    return
 
 
-
-def get_longest_contiguous_data(data):
-    """a"""
-    return
-
+#def get_longest_contiguous_data(data):
+#    """a"""
+#    return
 
 
 if __name__ == '__main__':
@@ -118,5 +109,4 @@ if __name__ == '__main__':
     args = parser.parse_args()
     dirname = args.directory
     verbose = args.verbose
-
 print(read_tidal_data("data/1947ABE.txt"))
