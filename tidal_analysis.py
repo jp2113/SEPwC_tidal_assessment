@@ -1,44 +1,53 @@
 #!/usr/bin/env python3
 
 # import the modules you need here
-import argparse
-import numpy as np
 import pandas as pd
-#import glob
+import matplotlib.pyplot as plt
+import datetime
+import wget
+import os
+import numpy as np
+import uptide
+import pytz
+import math
+import argparse
+import glob
 
+
+
+# Sets data being used temporarily
 filename1 = "data/1946ABE.txt"
 filename2 = "data/1947ABE.txt"
+files =["data/1946ABE.txt", "data/1947ABE.txt"]
 
 
 # Opens a specified file, formats columns as needed, and removes uneeded data
 def read_tidal_data(filename):
-    
   # Creates a gloobal variable 
     global data
-  # Removes unneeded data - 
+  # Reads in a dataframe and removes uneeded rows (https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_csv.html)
     data = pd.read_csv(filename , sep=r"\s+", skiprows=[0,1,2,3,4,5,6,7,8,10])
-  # Amalgamates the Date and Time column into one
+  # Amalgamates the Date and Time column into one (https://pandas.pydata.org/docs/reference/api/pandas.to_datetime.html)
     data["Datetime"] = pd.to_datetime(data['Date'] + ' ' + data['Time'])
     data = data.set_index("Datetime")
   # Renames column to 'Sea Level'
     data = data.rename(columns={data.columns[3] : 'Sea Level'})
   # Removes uneeded columns (https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.drop.html)
-    data = data.drop(columns = ['Date','Time'])
+    data = data.drop(columns = ['Date','Time', 'Cycle', 'Residual'])
   # Replaces any value containing M,N,T with NaN, in the 'Sea Level' column
     data.replace(to_replace=".*M$",value={"Sea Level": np.nan}, regex=True, inplace=True)
     data.replace(to_replace=".*N$",value={"Sea Level": np.nan}, regex=True, inplace=True)
     data.replace(to_replace=".*T$",value={"Sea Level": np.nan}, regex=True, inplace=True)
     #print(data)
-    
     return(data)
 
+# Calls function
 read_tidal_data(filename2)
 
 
 
 # Siphones data of a specific year from the df, and subtracts the mean from each data point
 def extract_single_year_remove_mean(year, data):
-    
   # Creates a global variable for viewing purposes
     global year_data
   # Sets start and end points of the year
@@ -51,16 +60,15 @@ def extract_single_year_remove_mean(year, data):
   # Calculates mean and subtracts from all data points (https://stackoverflow.com/questions/35169368/subtract-every-column-in-dataframe-with-the-mean-of-that-column-with-python)
     year_data = (year_data)-(year_data['Sea Level'].mean())
     #print(year_data)
-    
     return year_data
 
+#Calls function
 extract_single_year_remove_mean(1947, data)
 
 
 
 # Siphones data of a specific time period from the df, and subtracts the mean from each data point
 def extract_section_remove_mean(start, end, data):
-    
   # Creates a global variable for viewing purposes
     global section_data
   # Sets start and end points of the section
@@ -73,56 +81,39 @@ def extract_section_remove_mean(start, end, data):
   # Calculates mean and subtracts from all data points (https://stackoverflow.com/questions/35169368/subtract-every-column-in-dataframe-with-the-mean-of-that-column-with-python)
     section_data = (section_data)-(section_data['Sea Level'].mean())
     #print(section_data)
-    
     return section_data
 
-extract_section_remove_mean(19470101, 19471231, data)
+#Calls function
+extract_section_remove_mean(19470101, 19470815, data)
 
 
 
-# Reads and formats the two dfs, and joins them along the x axis
+# Joins dfs along the x axis
 def join_data(data1, data2):
-    
 # Creates a global variable for viewing purposes
     global joined_file
-# Formats the files ready for joining
-    format_1 = read_tidal_data(data1)
-    format_2 = read_tidal_data(data2)
-    files = [format_1, format_2]
+# Creates a list with the dfs
+    file_dfs = [data1, data2]
 # Joins the formatted files along the x axis (https://www.geeksforgeeks.org/how-to-combine-two-dataframe-in-python-pandas/)
-    #joined_file = (format_1.combine_first(format_2))
-    joined_file = pd.concat(files)
+    joined_file = pd.concat(file_dfs)
+    joined_file.sort_values(by=['Datetime'], ascending=True)
     #print (joined_file)
-    
     return joined_file
-
-join_data(filename1, filename2)
 
 
 
 def sea_level_rise(data):
-    
-    
     return 
-
 
 
 
 def tidal_analysis(data, constituents, start_datetime):
-    
     return 
-
 
 
 
 def get_longest_contiguous_data(data):
-    
     return 
-
-
-
-
-
 
 
 
