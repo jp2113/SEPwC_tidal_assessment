@@ -7,13 +7,13 @@
 
 #import os
 import argparse
-#import datetime
+import datetime
 #import math
 #import glob
 #import wget
 #import matplotlib.pyplot as plt
 #import uptide
-#import pytz
+import pytz
 import pandas as pd
 import numpy as np
 
@@ -51,7 +51,7 @@ def extract_single_year_remove_mean(year, data):
 # (https://www.codecademy.com/resources/docs/pandas/dataframe/loc)
     year_data = data.loc[year_string_start:year_string_end, ['Sea Level']]
 # Sets all data in the new df as numeric values
-    year_data = year_data.apply(pd.to_numeric, errors='raise')
+    year_data = year_data.apply(pd.to_numeric)
 # Calculates mean and subtracts from all data points
     year_data = (year_data)-(year_data['Sea Level'].mean())
     return year_data
@@ -66,7 +66,7 @@ def extract_section_remove_mean(start, end, data):
 # (https://www.codecademy.com/resources/docs/pandas/dataframe/loc)
     section_data = data.loc[section_start:section_end, ['Sea Level']]
 # Sets all data in the new df as numeric values
-    section_data = section_data.apply(pd.to_numeric, errors='raise')
+    section_data = section_data.apply(pd.to_numeric)
 # Calculates mean and subtracts from all data points
     section_data = (section_data)-(section_data['Sea Level'].mean())
     return section_data
