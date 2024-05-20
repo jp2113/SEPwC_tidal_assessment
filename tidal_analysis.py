@@ -8,11 +8,14 @@
 import os
 import argparse
 import datetime
-import math
-import glob
-import wget
+#import math
+#import glob
+#import wget
+from scipy import stats
 import matplotlib.pyplot as plt
-import uptide
+from scipy.stats import linregress
+import matplotlib.dates as base_date
+#import uptide
 import pytz
 import pandas as pd
 import numpy as np
@@ -84,14 +87,17 @@ def join_data(data1, data2):
 
 def sea_level_rise(data):
     """Works out the sea level rise stats"""
+    x = base_date.date2num(data.index)
+    y = data['Sea Level'].values
     
+    slope, _intercept, _r, p, std_err = stats.linregress(x,y)
+    return slope, p
+
+
+
+def tidal_analysis(data, constituents, start_datetime):
+    """a"""
     return
-
-
-
-#def tidal_analysis(data, constituents, start_datetime):
-#    """a"""
-#    return
 
 
 #def get_longest_contiguous_data(data):
