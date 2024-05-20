@@ -5,14 +5,14 @@
 # import the modules you need here
 
 
-#import os
+import os
 import argparse
 import datetime
-#import math
-#import glob
-#import wget
-#import matplotlib.pyplot as plt
-#import uptide
+import math
+import glob
+import wget
+import matplotlib.pyplot as plt
+import uptide
 import pytz
 import pandas as pd
 import numpy as np
@@ -82,9 +82,10 @@ def join_data(data1, data2):
     return join_file
 
 
-#def sea_level_rise(data):
-#    """a"""
-#    return
+def sea_level_rise(data):
+    """Works out the sea level rise stats"""
+    
+    return
 
 
 
