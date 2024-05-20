@@ -5,37 +5,31 @@
 # import the modules you need here
 
 
-#import os
 import argparse
-#import datetime
-#import math
 #import glob
-#import wget
-#from scipy import stats
-#import matplotlib.pyplot as plt
 from scipy.stats import linregress
 import matplotlib.dates as base_date
 import uptide
-#import pytz
 import pandas as pd
 import numpy as np
 
 
 def read_tidal_data(filename):
     """Opens a specified file, formats columns as needed, and removes uneeded data"""
-# Reads in a dataframe and removes uneeded rows
+# Reads in a dataframe and removes uneeded rows - https://shorturl.at/ZFCS2
     data = pd.read_csv(filename, sep = r"\s+", skiprows = [0,1,2,3,4,5,6,7,8,10])
-# Renames column to 'Sea Level'
+# Renames column to 'Sea Level' - https://shorturl.at/dar9X
     data = data.rename(columns = {data.columns[3] : 'Sea Level'})
-# Amalgamates the Date and Time column into one
+# Amalgamates the Date and Time column into one - https://shorturl.at/UITym
     data["Datetime"] = pd.to_datetime(data['Date'] + ' ' + data['Time'])
     data = data.set_index("Datetime")
-# Removes uneeded columns
+# Removes uneeded columns - https://shorturl.at/GUbMQ
     data = data.drop(columns = ['Date','Cycle', 'Residual'])
-# Replaces any value containing M,N,T with NaN, in the 'Sea Level' column
+# Replaces any value containing M,N,T with NaN, in the 'Sea Level' column - https://jhill1.github.io/SEPwC.github.io/
     data.replace(to_replace =".*M$", value={"Sea Level" : np.nan}, regex=True, inplace=True)
     data.replace(to_replace =".*N$", value={"Sea Level" : np.nan}, regex=True, inplace=True)
     data.replace(to_replace =".*T$", value={"Sea Level" : np.nan}, regex=True, inplace=True)
+# Changes Sea Level data to float variable type - https://shorturl.at/T1JPg
     data["Sea Level"]=data["Sea Level"].astype(float)
     return data
 
@@ -45,10 +39,10 @@ def extract_single_year_remove_mean(year, data):
 # Sets start and end points of the year
     year_string_start = str(year) + "0101"
     year_string_end = str(year) + "1231"
-# Siphones that year from the df
+# Siphones that year from the data frame
 # (https://www.codecademy.com/resources/docs/pandas/dataframe/loc)
     year_data = data.loc[year_string_start:year_string_end, ['Sea Level']]
-# Sets all data in the new df as numeric values
+# Sets all data in the new data frame as numeric values
     year_data = year_data.apply(pd.to_numeric)
 # Calculates mean and subtracts from all data points
     year_data = (year_data)-(year_data['Sea Level'].mean())
@@ -60,10 +54,10 @@ def extract_section_remove_mean(start, end, data):
 # Sets start and end points of the section
     section_start = str(start)
     section_end = str(end)
-# Siphones that section from the df
+# Siphones that section from the data frame
 # (https://www.codecademy.com/resources/docs/pandas/dataframe/loc)
     section_data = data.loc[section_start:section_end, ['Sea Level']]
-# Sets all data in the new df as numeric values
+# Sets all data in the new data frame as numeric values
     section_data = section_data.apply(pd.to_numeric)
 # Calculates mean and subtracts from all data points
     section_data = (section_data)-(section_data['Sea Level'].mean())
@@ -71,7 +65,7 @@ def extract_section_remove_mean(start, end, data):
 
 
 def join_data(data1, data2):
-    """Joins data frames along the x axis"""
+    """Joins data frames along the x axis in chronological order"""
 # Joins the formatted files along the x axis
 # (https://www.geeksforgeeks.org/how-to-combine-two-dataframe-in-python-pandas/)
     join_file = pd.concat([data1, data2])
@@ -81,20 +75,28 @@ def join_data(data1, data2):
 
 
 def sea_level_rise(data):
-    """"""
+    """Creates Sea Level on date2num for 1970"""
+# Drops all null values in the subset
     data = data.dropna(subset=["Sea Level"])
+# Records numer of days since the epoch
     x = base_date.date2num(data.index)
+# Gathers the value only data from the subset
     y = data['Sea Level'].values
+# Returns the p-value corresponding to the slope
     slope, _intercept, _r, p, _std_err = linregress(x,y)
     return slope, p
 
 
 def tidal_analysis(data, constituents, start_datetime):
-    """a"""
+    """Completes Tidal analysis from constituents of amplitudes and time periods"""
+# Drops all null values in the subset
     data = data.dropna(subset=["Sea Level"])
+# 
     tide = uptide.Tides(constituents)
+# Gathers data as seconds from start_datetime
     tide.set_initial_time(start_datetime)
     seconds_since = (data.index.astype('int64').to_numpy()/1e9) - start_datetime.timestamp()
+# Equation for tidal analysis to return amp, and pha for subset at specific number of seconds from epoch
     amp,pha = uptide.harmonic_analysis(tide, data['Sea Level'].to_numpy(), seconds_since)
     return amp, pha
 
