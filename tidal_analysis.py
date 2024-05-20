@@ -5,26 +5,20 @@
 # import the modules you need here
 
 
-import os
+#import os
 import argparse
-import datetime
+#import datetime
 #import math
 #import glob
 #import wget
-from scipy import stats
-import matplotlib.pyplot as plt
+#from scipy import stats
+#import matplotlib.pyplot as plt
 from scipy.stats import linregress
 import matplotlib.dates as base_date
-#import uptide
-import pytz
+import uptide
+#import pytz
 import pandas as pd
 import numpy as np
-
-
-
-# Sets data being used temporarily
-FILENAME1 = "data/1946ABE.txt"
-FILENAME2 = "data/1947ABE.txt"
 
 
 def read_tidal_data(filename):
@@ -42,6 +36,7 @@ def read_tidal_data(filename):
     data.replace(to_replace =".*M$", value={"Sea Level" : np.nan}, regex=True, inplace=True)
     data.replace(to_replace =".*N$", value={"Sea Level" : np.nan}, regex=True, inplace=True)
     data.replace(to_replace =".*T$", value={"Sea Level" : np.nan}, regex=True, inplace=True)
+    data["Sea Level"]=data["Sea Level"].astype(float)
     return data
 
 
@@ -76,7 +71,7 @@ def extract_section_remove_mean(start, end, data):
 
 
 def join_data(data1, data2):
-    """Joins dfs along the x axis"""
+    """Joins data frames along the x axis"""
 # Joins the formatted files along the x axis
 # (https://www.geeksforgeeks.org/how-to-combine-two-dataframe-in-python-pandas/)
     join_file = pd.concat([data1, data2])
@@ -86,18 +81,22 @@ def join_data(data1, data2):
 
 
 def sea_level_rise(data):
-    """Works out the sea level rise stats"""
+    """"""
+    data = data.dropna(subset=["Sea Level"])
     x = base_date.date2num(data.index)
     y = data['Sea Level'].values
-    
-    slope, _intercept, _r, p, std_err = stats.linregress(x,y)
+    slope, _intercept, _r, p, _std_err = linregress(x,y)
     return slope, p
-
 
 
 def tidal_analysis(data, constituents, start_datetime):
     """a"""
-    return
+    data = data.dropna(subset=["Sea Level"])
+    tide = uptide.Tides(constituents)
+    tide.set_initial_time(start_datetime)
+    seconds_since = (data.index.astype('int64').to_numpy()/1e9) - start_datetime.timestamp()
+    amp,pha = uptide.harmonic_analysis(tide, data['Sea Level'].to_numpy(), seconds_since)
+    return amp, pha
 
 
 #def get_longest_contiguous_data(data):
@@ -112,7 +111,7 @@ if __name__ == '__main__':
                      epilog="Copyright 2024, Jon Hill"
                      )
     parser.add_argument("directory",
-                    help="the directory containing txt files with data")
+    help="the directory containing txt files with data")
     parser.add_argument('-v', '--verbose',
                    action='store_true',
                     default=False,
@@ -120,4 +119,6 @@ if __name__ == '__main__':
     args = parser.parse_args()
     dirname = args.directory
     verbose = args.verbose
-print(read_tidal_data("data/1947ABE.txt"))
+
+
+#print(read_tidal_data("data/1947ABE.txt"))
