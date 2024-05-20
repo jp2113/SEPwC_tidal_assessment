@@ -116,10 +116,14 @@ def tidal_analysis(data, constituents, start_datetime):
 
 def get_longest_contiguous_data(data):
     """a"""
-    contig = max(((data) for k,g in groupby(data, math.isnan) if not k), key = len)
-    print (contig)
+    #contig = max(((data) for k,g in groupby(data, math.isnan) if not k), key = len)
+    contig = data.("Sea Level").values
+    contig = np.concatenate(([True], np.isnan(contig), [True] ))
+    contig = np.flatnonzero(contig[1:] != contig[:-1]).reshape(-1,2)
+    start,stop = contig[(contig[:,1] - contig [:,0]).argmax()]
     return
 
+print (get_longest_contiguous_data(FILENAME))
 
 
 if __name__ == '__main__':
