@@ -12,24 +12,33 @@ import matplotlib.dates as base_date
 import uptide
 import pandas as pd
 import numpy as np
+from itertools import groupby
+import math
 
+FILENAME = ("data/1947ABE.txt")
 
 def read_tidal_data(filename):
     """Opens a specified file, formats columns as needed, and removes uneeded data"""
-# Reads in a dataframe and removes uneeded rows - https://shorturl.at/ZFCS2
+# Reads in a dataframe and removes uneeded rows
+# (https://stackoverflow.com/questions/23810367/ignore-character-while-importing-with-pandas)
     data = pd.read_csv(filename, sep = r"\s+", skiprows = [0,1,2,3,4,5,6,7,8,10])
-# Renames column to 'Sea Level' - https://shorturl.at/dar9X
+# Renames column to 'Sea Level'
+# (https://stackoverflow.com/questions/11346283/renaming-column-names-in-pandas)
     data = data.rename(columns = {data.columns[3] : 'Sea Level'})
-# Amalgamates the Date and Time column into one - https://shorturl.at/UITym
+# Amalgamates the Date and Time column into one
+# (https://pandas.pydata.org/docs/reference/api/pandas.to_datetime.html)
     data["Datetime"] = pd.to_datetime(data['Date'] + ' ' + data['Time'])
     data = data.set_index("Datetime")
-# Removes uneeded columns - https://shorturl.at/GUbMQ
+# Removes uneeded columns
+# (https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.drop.html)
     data = data.drop(columns = ['Date','Cycle', 'Residual'])
-# Replaces any value containing M,N,T with NaN, in the 'Sea Level' column - https://jhill1.github.io/SEPwC.github.io/
+# Replaces any value containing M,N,T with NaN, in the 'Sea Level' column
+# (https://jhill1.github.io/SEPwC.github.io/)
     data.replace(to_replace =".*M$", value={"Sea Level" : np.nan}, regex=True, inplace=True)
     data.replace(to_replace =".*N$", value={"Sea Level" : np.nan}, regex=True, inplace=True)
     data.replace(to_replace =".*T$", value={"Sea Level" : np.nan}, regex=True, inplace=True)
-# Changes Sea Level data to float variable type - https://shorturl.at/T1JPg
+# Changes Sea Level data to float variable type
+# (https://sentry.io/answers/change-a-column-type-in-a-dataframe-in-python-pandas/)
     data["Sea Level"]=data["Sea Level"].astype(float)
     return data
 
@@ -70,6 +79,7 @@ def join_data(data1, data2):
 # (https://www.geeksforgeeks.org/how-to-combine-two-dataframe-in-python-pandas/)
     join_file = pd.concat([data1, data2])
 # Sets the files in chronological order
+# (https://pandas.pydata.org/docs/user_guide/merging.html)
     join_file = join_file.sort_values(by='Datetime', ascending=True)
     return join_file
 
@@ -77,12 +87,14 @@ def join_data(data1, data2):
 def sea_level_rise(data):
     """Creates Sea Level on date2num for 1970"""
 # Drops all null values in the subset
+# (https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.dropna.html)
     data = data.dropna(subset=["Sea Level"])
 # Records numer of days since the epoch
     x = base_date.date2num(data.index)
 # Gathers the value only data from the subset
     y = data['Sea Level'].values
 # Returns the p-value corresponding to the slope
+# (https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.linregress.html)
     slope, _intercept, _r, p, _std_err = linregress(x,y)
     return slope, p
 
@@ -90,20 +102,24 @@ def sea_level_rise(data):
 def tidal_analysis(data, constituents, start_datetime):
     """Completes Tidal analysis from constituents of amplitudes and time periods"""
 # Drops all null values in the subset
+# (https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.dropna.html)
     data = data.dropna(subset=["Sea Level"])
-# 
     tide = uptide.Tides(constituents)
 # Gathers data as seconds from start_datetime
+# (https://docs.python.org/3/library/datetime.html)
     tide.set_initial_time(start_datetime)
     seconds_since = (data.index.astype('int64').to_numpy()/1e9) - start_datetime.timestamp()
-# Equation for tidal analysis to return amp, and pha for subset at specific number of seconds from epoch
+# Tidal analysis to return amp, and pha for subset at specific number of seconds from epoch
     amp,pha = uptide.harmonic_analysis(tide, data['Sea Level'].to_numpy(), seconds_since)
     return amp, pha
 
 
-#def get_longest_contiguous_data(data):
-#    """a"""
-#    return
+def get_longest_contiguous_data(data):
+    """a"""
+    contig = max(((data) for k,g in groupby(data, math.isnan) if not k), key = len)
+    print (contig)
+    return
+
 
 
 if __name__ == '__main__':
