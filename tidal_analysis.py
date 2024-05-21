@@ -4,18 +4,18 @@
 
 # import the modules you need here
 
-
 import argparse
 #import glob
+#import math
 from scipy.stats import linregress
+from scipy.ndimage.measurements import label
 import matplotlib.dates as base_date
 import uptide
 import pandas as pd
 import numpy as np
-from itertools import groupby
-import math
+#from itertools import groupby
 
-FILENAME = ("data/1947ABE.txt")
+path = "data/aberdeen/2000ABE.txt"
 
 def read_tidal_data(filename):
     """Opens a specified file, formats columns as needed, and removes uneeded data"""
@@ -114,16 +114,16 @@ def tidal_analysis(data, constituents, start_datetime):
     return amp, pha
 
 
-def get_longest_contiguous_data(data):
-    """a"""
-    #contig = max(((data) for k,g in groupby(data, math.isnan) if not k), key = len)
-    contig = data.("Sea Level").values
-    contig = np.concatenate(([True], np.isnan(contig), [True] ))
-    contig = np.flatnonzero(contig[1:] != contig[:-1]).reshape(-1,2)
-    start,stop = contig[(contig[:,1] - contig [:,0]).argmax()]
-    return
+#def get_longest_contiguous_data(filename):
+#    """a"""
+#    data = filename['Sea Level'].toframe()
+#    data['Start_of_contig'] = data['Sea Level'].ne(data['Sea Level'].shift())
+#    data['contig_id'] = data.start_of_config.cumsum()
+#    data['contig_count'] = data.groupby('contig_id').cumcount()+1
+#    Contiguous = pd.concat([filename, data['contig_count']], axis=1)
+#    return Contiguous
 
-print (get_longest_contiguous_data(FILENAME))
+#print(get_longest_contiguous_data(path))
 
 
 if __name__ == '__main__':
