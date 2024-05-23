@@ -120,9 +120,26 @@ def tidal_analysis(data, constituents, start_datetime):
 
 
 
-file_path = 'data/aberdeen/2001ABE.txt'
-ABE2000 = open(file_path, "r") 
-print (ABE2000.read())
+
+def user_interface (directory):
+    """a"""
+    full_directory = []
+    for filename in glob.iglob(directory, recursive=True):
+        full_directory.append(read_tidal_data(filename))
+        
+    return
+
+pathway = input("What directory do you wish to access: ")
+user_interface(pathway)
+    
+    
+# Open the file in read mode
+#with open(filepaths, 'r') as file:
+# Read the content of the file
+#    file_content = file.read()
+         
+# Print the content
+#    print("File Content:\n", file_content)
 
 
 
