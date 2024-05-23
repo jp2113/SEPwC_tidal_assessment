@@ -4,18 +4,16 @@
 
 # import the modules you need here
 
+import os
 import argparse
-#import glob
-#import math
+import glob
+import math
 from scipy.stats import linregress
-from scipy.ndimage.measurements import label
 import matplotlib.dates as base_date
 import uptide
 import pandas as pd
 import numpy as np
-#from itertools import groupby
 
-path = "data/aberdeen/2000ABE.txt"
 
 def read_tidal_data(filename):
     """Opens a specified file, formats columns as needed, and removes uneeded data"""
@@ -116,14 +114,21 @@ def tidal_analysis(data, constituents, start_datetime):
 
 #def get_longest_contiguous_data(filename):
 #    """a"""
-#    data = filename['Sea Level'].toframe()
-#    data['Start_of_contig'] = data['Sea Level'].ne(data['Sea Level'].shift())
-#    data['contig_id'] = data.start_of_config.cumsum()
-#    data['contig_count'] = data.groupby('contig_id').cumcount()+1
-#    Contiguous = pd.concat([filename, data['contig_count']], axis=1)
-#    return Contiguous
+#    return
 
-#print(get_longest_contiguous_data(path))
+
+
+
+
+file_path = 'data/aberdeen/2001ABE.txt'
+ABE2000 = open(file_path, "r") 
+print (ABE2000.read())
+
+
+
+
+
+
 
 
 if __name__ == '__main__':
