@@ -4,10 +4,10 @@
 
 # import the modules you need here
 
-import os
+#import os
 import argparse
-import glob
-import math
+#import glob
+#import math
 from scipy.stats import linregress
 import matplotlib.dates as base_date
 import uptide
@@ -121,23 +121,23 @@ def tidal_analysis(data, constituents, start_datetime):
 
 
 
-def user_interface (directory):
-    """a"""
-    full_directory = []
-    for filename in glob.iglob(directory, recursive=True):
-        full_directory.append(read_tidal_data(filename))
-        
-    return
+#def user_interface (directory):
+#    """a"""
+#    full_directory = []
+#    for filename in glob.iglob(directory, recursive=True):
+#        full_directory.append(read_tidal_data(filename))
+#
+#    return
 
-pathway = input("What directory do you wish to access: ")
-user_interface(pathway)
-    
-    
+#pathway = input("What directory do you wish to access: ")
+#user_interface(pathway)
+
+
 # Open the file in read mode
 #with open(filepaths, 'r') as file:
 # Read the content of the file
 #    file_content = file.read()
-         
+
 # Print the content
 #    print("File Content:\n", file_content)
 
