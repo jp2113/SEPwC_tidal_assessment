@@ -3,8 +3,7 @@
 #!/usr/bin/env python3
 
 # import the modules you need here
-
-
+import datetime
 import argparse
 import glob
 #import math
@@ -94,18 +93,18 @@ def sea_level_rise(data):
 # Returns the p-value corresponding to the slope
 # (https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.linregress.html)
     slope, _intercept, _r, p, _std_err = linregress(x,y)
-    return slope, p
+    return p
 
 
-def tidal_analysis(data, constituents, start_datetime):
+def tidal_analysis(data, start_datetime):
     """Completes Tidal analysis from constituents of amplitudes and time periods"""
 # Drops all null values in the subset
 # (https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.dropna.html)
     data = data.dropna(subset=["Sea Level"])
-    tide = uptide.Tides(constituents)
+    tide = uptide.Tides(['M2'])
 # Gathers data as seconds from start_datetime
 # (https://docs.python.org/3/library/datetime.html)
-    tide.set_initial_time(start_datetime)
+    tide.set_initial_time(datetime.datetime(start_datetime))
     seconds_since = (data.index.astype('int64').to_numpy()/1e9) - start_datetime.timestamp()
 # Tidal analysis to return amp, and pha for subset at specific number of seconds from epoch
     amp,pha = uptide.harmonic_analysis(tide, data['Sea Level'].to_numpy(), seconds_since)
@@ -117,24 +116,26 @@ def tidal_analysis(data, constituents, start_datetime):
 #    return
 
 
-def user_interface(station):
-    """Finds all txt files in directory from user, joins them,
+#def user_interface(station):
+    """Finds all txt files in directory given by user, joins them,
        and prints to screen: M2,S2, and sea level rise"""
 # Finds all the text files in directory, and loads them in
-    all_files = glob.glob("data/" + (station) + "/*.txt")
-    formatted_files = []
+all_files = glob.glob("data/aberdeen/*.txt")
+formatted_files = []
 
-    for file in all_files:
-        file = read_tidal_data(file)
-        formatted_files.append(file)
+for file in all_files:
+    file = read_tidal_data(file)
+    formatted_files.append(file)
 
-    full_file = pd.concat(formatted_files)
-    full_file = full_file.sort_values(by='Datetime', ascending=True)
+full_file = pd.concat(formatted_files)
+full_file = full_file.sort_values(by='Datetime', ascending=True)
 
-    return full_file
+#    return full_file
 
 #print (sea_level_rise(full_file))
 #print (tidal_analysis(full_file, ['M2'], (2000,1,1,0,0,0)))
+
+tidal_analysis(full_file, (2000,1,1,0,0,0))
 
 
 if __name__ == '__main__':
