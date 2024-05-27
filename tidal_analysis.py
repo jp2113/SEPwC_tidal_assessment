@@ -135,8 +135,6 @@ full_file = full_file.sort_values(by='Datetime', ascending=True)
 #print (sea_level_rise(full_file))
 #print (tidal_analysis(full_file, ['M2'], (2000,1,1,0,0,0)))
 
-tidal_analysis(full_file, (2000,1,1,0,0,0))
-
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
