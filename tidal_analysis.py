@@ -4,9 +4,9 @@
 
 # import the modules you need here
 
-#import os
+
 import argparse
-#import glob
+import glob
 #import math
 from scipy.stats import linregress
 import matplotlib.dates as base_date
@@ -116,30 +116,20 @@ def tidal_analysis(data, constituents, start_datetime):
 #    """a"""
 #    return
 
+# Finds all the text files in directory, and loads them in
+all_files = glob.glob("data/aberdeen/*.txt")
+formatted_files = []
+
+for file in all_files:
+    file = read_tidal_data(file)
+    formatted_files.append(file)
+
+
+    
 
 
 
 
-
-#def user_interface (directory):
-#    """a"""
-#    full_directory = []
-#    for filename in glob.iglob(directory, recursive=True):
-#        full_directory.append(read_tidal_data(filename))
-#
-#    return
-
-#pathway = input("What directory do you wish to access: ")
-#user_interface(pathway)
-
-
-# Open the file in read mode
-#with open(filepaths, 'r') as file:
-# Read the content of the file
-#    file_content = file.read()
-
-# Print the content
-#    print("File Content:\n", file_content)
 
 
 
