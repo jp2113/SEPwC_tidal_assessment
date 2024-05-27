@@ -16,7 +16,7 @@ import numpy as np
 
 
 def read_tidal_data(filename):
-    """Opens a specified file, formats columns as needed, and removes uneeded data"""
+    """Opens specified file, formats the columns as needed, and removes any uneeded data"""
 # Reads in a dataframe and removes uneeded rows
 # (https://stackoverflow.com/questions/23810367/ignore-character-while-importing-with-pandas)
     data = pd.read_csv(filename, sep = r"\s+", skiprows = [0,1,2,3,4,5,6,7,8,10])
@@ -116,26 +116,25 @@ def tidal_analysis(data, constituents, start_datetime):
 #    """a"""
 #    return
 
+
+def user_interface(station):
+    """Finds all txt files in directory from user, joins them,
+       and prints to screen: M2,S2, and sea level rise"""
 # Finds all the text files in directory, and loads them in
-all_files = glob.glob("data/aberdeen/*.txt")
-formatted_files = []
+    all_files = glob.glob("data/" + (station) + "/*.txt")
+    formatted_files = []
 
-for file in all_files:
-    file = read_tidal_data(file)
-    formatted_files.append(file)
+    for file in all_files:
+        file = read_tidal_data(file)
+        formatted_files.append(file)
 
+    full_file = pd.concat(formatted_files)
+    full_file = full_file.sort_values(by='Datetime', ascending=True)
 
-    
+    return full_file
 
-
-
-
-
-
-
-
-
-
+#print (sea_level_rise(full_file))
+#print (tidal_analysis(full_file, ['M2'], (2000,1,1,0,0,0)))
 
 
 if __name__ == '__main__':
@@ -153,6 +152,3 @@ if __name__ == '__main__':
     args = parser.parse_args()
     dirname = args.directory
     verbose = args.verbose
-
-
-#print(read_tidal_data("data/1947ABE.txt"))
