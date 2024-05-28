@@ -136,20 +136,18 @@ if __name__ == '__main__':
 
 
 all_files = glob.glob(str(dirname) + "/*.txt")
-#all_files = glob.glob("data/aberdeen/*.txt")
 
 formatted_files = []
 
 for file in all_files:
     file = read_tidal_data(file)
     formatted_files.append(file)
-
-
+    
 full_file = join_data(formatted_files[0], formatted_files[1])
 numb = len(formatted_files)
+
 for file in range (len(formatted_files)):
     full_file = join_data(full_file, formatted_files[file])
-
 
 
 directory = str(dirname)
@@ -173,5 +171,7 @@ print (S2[8:13])
 
 print ("--------------------")
 print ("Longest contiguous data: ")
+print (full_file)
+
 
 print("---------------------")
