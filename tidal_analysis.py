@@ -3,6 +3,7 @@
 #!/usr/bin/env python3
 
 # import the modules you need here
+import re
 import sys
 import datetime
 import argparse
@@ -150,6 +151,27 @@ for file in range (len(formatted_files)):
     full_file = join_data(full_file, formatted_files[file])
 
 
-print (sea_level_rise(full_file))
-print (tidal_analysis(full_file, ['M2'], (datetime.datetime(2000,1,1,0,0,0))))
-print (tidal_analysis(full_file, ['S2'], (datetime.datetime(2000,1,1,0,0,0))))
+
+directory = str(dirname)
+directory = directory[5:]
+print("---------------------")
+print ("Station Name: " + (directory))
+
+print ("--------------------")
+print ("Sea Level Rise (m): ")
+print (sea_level_rise(full_file)[1])
+
+print ("--------------------")
+print ("M2 amplitude (m): ")
+M2 = str(tidal_analysis(full_file, ['M2'], (datetime.datetime(2000,1,1,0,0,0))))
+print (M2[8:13])
+
+print ("--------------------")
+print ("S2 Amplitude in (m): ")
+S2 = str(tidal_analysis(full_file, ['S2'], (datetime.datetime(2000,1,1,0,0,0))))
+print (S2[8:13])
+
+print ("--------------------")
+print ("Longest contiguous data: ")
+
+print("---------------------")
