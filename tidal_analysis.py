@@ -150,12 +150,9 @@ for file in all_files:
     formatted_files.append(file)
 
 
- 
-#full_file = pd.concat(formatted_files)
+full_file = pd.concat(formatted_files)
 #full_file = full_file.sort_values(by='Datetime', ascending=True)
 
-
-#    return full_file
 
 #print (sea_level_rise(full_file))
 #print (tidal_analysis(full_file, ['M2'], (2000,1,1)))
@@ -167,7 +164,3 @@ for file in all_files:
 #seconds_since = (full_file.index.astype('int64').to_numpy()/1e9) - datetime.datetime(2000,1,1,0,0,0).timestamp()
 #amp,pha = uptide.harmonic_analysis(tide, full_file['Sea Level'].to_numpy(), seconds_since)
 #print (amp,pha)
-
-
-
-
