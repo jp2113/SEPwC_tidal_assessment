@@ -4,7 +4,7 @@
 
 # import the modules you need here
 import sys
-import datetime
+#import datetime
 import argparse
 import glob
 #import math
@@ -29,7 +29,7 @@ def read_tidal_data(filename):
     data = data.set_index("Datetime")
 # Removes uneeded columns
 # (https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.drop.html)
-    data = data.drop(columns = ['Date','Cycle','Residual'])
+    data = data.drop(columns = ['Date','Cycle','Residual', 'Time'])
 # Replaces any value containing M,N,T with NaN, in the 'Sea Level' column
 # (https://jhill1.github.io/SEPwC.github.io/)
     data.replace(to_replace =".*M$", value={"Sea Level" : np.nan}, regex=True, inplace=True)
@@ -117,31 +117,25 @@ def tidal_analysis(data, constituents, start_datetime):
 #    return
 
 
-#def user_interface(station):
-#    """Finds all txt files in directory given by user, joins them,
-#       and prints to screen: M2,S2, and sea level rise"""
-# Finds all the text files in directory, and loads them in
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(
+                     prog="UK Tidal analysis",
+                     description="Calculate tidal constiuents and RSL from tide gauge data",
+                     epilog="Copyright 2024, Joshua Proctor"
+                     )
+    parser.add_argument("directory",
+    help="the directory containing txt files with data")
+    parser.add_argument('-v', '--verbose',
+                   action='store_true',
+                    default=False,
+                    help="Print progress")
+    args = parser.parse_args()
+    dirname = args.directory
+    verbose = args.verbose
 
 
-#if __name__ == '__main__':
-#    parser = argparse.ArgumentParser(
-#                     prog="UK Tidal analysis",
-#                     description="Calculate tidal constiuents and RSL from tide gauge data",
-#                     epilog="Copyright 2024, Joshua Proctor"
-#                     )
-#    parser.add_argument("directory",
-#    help="the directory containing txt files with data")
-#    parser.add_argument('-v', '--verbose',
-#                   action='store_true',
-#                    default=False,
-#                    help="Print progress")
-#    args = parser.parse_args()
-#    dirname = args.directory
-#    verbose = args.verbose
-
-
-#all_files = glob.glob(str(dirname) + "/*.txt")
-all_files = glob.glob("data/aberdeen/*.txt")
+all_files = glob.glob(str(dirname) + "/*.txt")
+#all_files = glob.glob("data/aberdeen/*.txt")
 
 formatted_files = []
 
@@ -150,8 +144,12 @@ for file in all_files:
     formatted_files.append(file)
 
 
-full_file = pd.concat(formatted_files)
-#full_file = full_file.sort_values(by='Datetime', ascending=True)
+
+full_file = join_data(formatted_files[0], formatted_files[1])
+numb = len(formatted_files)
+for file in range (len(formatted_files)):
+    full_file = join_data(full_file, formatted_files[file])
+
 
 
 #print (sea_level_rise(full_file))
