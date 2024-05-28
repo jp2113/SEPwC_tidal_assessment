@@ -4,7 +4,7 @@
 
 # import the modules you need here
 import sys
-#import datetime
+import datetime
 import argparse
 import glob
 #import math
@@ -29,7 +29,7 @@ def read_tidal_data(filename):
     data = data.set_index("Datetime")
 # Removes uneeded columns
 # (https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.drop.html)
-    data = data.drop(columns = ['Date','Cycle','Residual', 'Time'])
+    data = data.drop(columns = ['Date','Cycle','Residual'])
 # Replaces any value containing M,N,T with NaN, in the 'Sea Level' column
 # (https://jhill1.github.io/SEPwC.github.io/)
     data.replace(to_replace =".*M$", value={"Sea Level" : np.nan}, regex=True, inplace=True)
@@ -105,8 +105,8 @@ def tidal_analysis(data, constituents, start_datetime):
     tide = uptide.Tides(constituents)
 # Gathers data as seconds from start_datetime
 # (https://docs.python.org/3/library/datetime.html)
-    tide.set_initial_time(start_datetime)
-    seconds_since = (data.index.astype('int64').to_numpy()/1e9) - start_datetime.timestamp()
+    tide.set_initial_time((start_datetime))
+    seconds_since = (data.index.astype('int64').to_numpy()/1e9) - (start_datetime).timestamp()
 # Tidal analysis to return amp, and pha for subset at specific number of seconds from epoch
     amp,pha = uptide.harmonic_analysis(tide, data['Sea Level'].to_numpy(), seconds_since)
     return amp, pha
@@ -144,21 +144,12 @@ for file in all_files:
     formatted_files.append(file)
 
 
-
 full_file = join_data(formatted_files[0], formatted_files[1])
 numb = len(formatted_files)
 for file in range (len(formatted_files)):
     full_file = join_data(full_file, formatted_files[file])
 
 
-
-#print (sea_level_rise(full_file))
-#print (tidal_analysis(full_file, ['M2'], (2000,1,1)))
-
-
-#full_file = full_file.dropna(subset=["Sea Level"])
-#tide=uptide.Tides(['M2'])
-#tide.set_initial_time(datetime.datetime(2000,1,1,0,0,0))
-#seconds_since = (full_file.index.astype('int64').to_numpy()/1e9) - datetime.datetime(2000,1,1,0,0,0).timestamp()
-#amp,pha = uptide.harmonic_analysis(tide, full_file['Sea Level'].to_numpy(), seconds_since)
-#print (amp,pha)
+print (sea_level_rise(full_file))
+print (tidal_analysis(full_file, ['M2'], (datetime.datetime(2000,1,1,0,0,0))))
+print (tidal_analysis(full_file, ['S2'], (datetime.datetime(2000,1,1,0,0,0))))
