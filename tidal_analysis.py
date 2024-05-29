@@ -3,8 +3,6 @@
 #!/usr/bin/env python3
 
 # import the modules you need here
-import re
-import sys
 import datetime
 import argparse
 import glob
@@ -30,7 +28,7 @@ def read_tidal_data(filename):
     data = data.set_index("Datetime")
 # Removes uneeded columns
 # (https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.drop.html)
-    data = data.drop(columns = ['Date','Cycle','Residual'])
+    data = data.drop(columns = ['Date', 'Cycle', 'Residual'])
 # Replaces any value containing M,N,T with NaN, in the 'Sea Level' column
 # (https://jhill1.github.io/SEPwC.github.io/)
     data.replace(to_replace =".*M$", value={"Sea Level" : np.nan}, regex=True, inplace=True)
@@ -113,9 +111,18 @@ def tidal_analysis(data, constituents, start_datetime):
     return amp, pha
 
 
-#def get_longest_contiguous_data(filename):
-#    """a"""
-#    return
+def get_longest_contiguous_data(filename):
+    """a"""
+    # pad with np.nan
+    filename = np.append(np.nan, np.append(filename, np.nan))
+    # find where null
+    w = np.where(np.isnan(filename))[0]
+    # diff to find length of stretch
+    # argmax to find where largest stretch
+    a = np.diff(w).argmax()
+    # return original positions of boundary nulls
+    return w[[a, a + 1]] + np.array([0, -2])
+
 
 
 if __name__ == '__main__':
@@ -135,6 +142,7 @@ if __name__ == '__main__':
     verbose = args.verbose
 
 
+#all_files = glob.glob('data/aberdeen/*.txt')
 all_files = glob.glob(str(dirname) + "/*.txt")
 
 formatted_files = []
@@ -142,18 +150,17 @@ formatted_files = []
 for file in all_files:
     file = read_tidal_data(file)
     formatted_files.append(file)
-    
+
 full_file = join_data(formatted_files[0], formatted_files[1])
-numb = len(formatted_files)
 
-for file in range (len(formatted_files)):
-    full_file = join_data(full_file, formatted_files[file])
+for file, formatted_files in enumerate(formatted_files):
+    full_file = join_data(full_file, formatted_files)
 
 
-directory = str(dirname)
-directory = directory[5:]
-print("---------------------")
-print ("Station Name: " + (directory))
+#directory = str(dirname)
+#directory = directory[5:]
+#print("---------------------")
+#print ("Station Name: " + (directory))
 
 print ("--------------------")
 print ("Sea Level Rise (m): ")
@@ -169,9 +176,16 @@ print ("S2 Amplitude in (m): ")
 S2 = str(tidal_analysis(full_file, ['S2'], (datetime.datetime(2000,1,1,0,0,0))))
 print (S2[8:13])
 
+full_file = full_file.drop(columns = ['Time'])
 print ("--------------------")
 print ("Longest contiguous data: ")
-print (full_file)
-
-
+print (" ")
+df = full_file['Sea Level']
+range_df = get_longest_contiguous_data(df)
+RANGE_DF_STR = str(range_df)
+RANGE_DF_STR = RANGE_DF_STR [1:-1]
+RANGE_DF_STR = RANGE_DF_STR.split()
+start_df = int(RANGE_DF_STR[0])
+end_df = int(RANGE_DF_STR[1])
+print (full_file[start_df:end_df])
 print("---------------------")
