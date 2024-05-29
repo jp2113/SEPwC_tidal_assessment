@@ -112,17 +112,15 @@ def tidal_analysis(data, constituents, start_datetime):
 
 
 def get_longest_contiguous_data(filename):
-    """a"""
-    # pad with np.nan
+    """"Finds the index positions of the boundaries of the largest NaN stretch"""
+# adding a pad with np.nan
     filename = np.append(np.nan, np.append(filename, np.nan))
-    # find where null
+# finds where the null values are
     w = np.where(np.isnan(filename))[0]
-    # diff to find length of stretch
-    # argmax to find where largest stretch
+# finds length of nan value stretches, and finds the largest one
     a = np.diff(w).argmax()
-    # return original positions of boundary nulls
+# returns indeces of the boundary positions of the largest stretch
     return w[[a, a + 1]] + np.array([0, -2])
-
 
 
 if __name__ == '__main__':
@@ -142,45 +140,50 @@ if __name__ == '__main__':
     verbose = args.verbose
 
 
-#all_files = glob.glob('data/aberdeen/*.txt')
+# Uses the glob module to pull in all the txt files in a directory given by the user
     all_files = glob.glob(str(dirname) + "/*.txt")
 
-
+# Creates empty list to append to further on
     formatted_files = []
+# Iterates over the files, calling the read_tidal_data function to format the data,
+# and appends to list
     for file in all_files:
         format_file = read_tidal_data(file)
         formatted_files.append(format_file)
 
-
-    #full_file = join_data(formatted_files[0], formatted_files[1])
-    #for file in range (len(formatted_files)):
-    #    full_file = join_data(full_file, formatted_files[file])
-
-    for file, full_file in enumerate(formatted_files):
+# Creates full_file - holding the joined data from the first two files in the directory
+    full_file = join_data(formatted_files[0], formatted_files[1])
+# Iterates over the rest of the files, joining each file to full_file
+    for file in range (len(formatted_files)):   # noqa
         full_file = join_data(full_file, formatted_files[file])
 
-    print (full_file)
-
+# Outputs the station name based on which directory given by user
     DIRECTORY = str(dirname)
     DIRECTORY = DIRECTORY[5:]
     print("---------------------")
     print ("Station Name: " + (DIRECTORY))
 
+# Outputs the Sea Level Rise stat in metres based on directory
     print ("--------------------")
     print ("Sea Level Rise (m): ")
     print (sea_level_rise(full_file)[1])
 
+# Outputs the M2 amp stat in metres based on directory
     print ("--------------------")
     print ("M2 amplitude (m): ")
     M2 = str(tidal_analysis(full_file, ['M2'], (datetime.datetime(2000,1,1,0,0,0))))
     print (M2[8:13])
 
+# Outputs the S2 amp stat in metres based on directory
     print ("--------------------")
     print ("S2 Amplitude in (m): ")
     S2 = str(tidal_analysis(full_file, ['S2'], (datetime.datetime(2000,1,1,0,0,0))))
     print (S2[8:13])
 
+# Drops the time column (already have info in index)
     full_file = full_file.drop(columns = ['Time'])
+
+# Outputs longest contiguous data set based on directory
     print ("--------------------")
     print ("Longest contiguous data: ")
     print (" ")
