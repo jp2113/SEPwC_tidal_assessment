@@ -106,13 +106,14 @@ def tidal_analysis(data, constituents, start_datetime):
     tide.set_initial_time((start_datetime))
     seconds_since = (data.index.astype('int64').to_numpy()/1e9) - (start_datetime).timestamp()
 # Tidal analysis to return amp, and pha for subset at specific number of seconds from epoch
+# (https://jhill1.github.io/SEPwC.github.io/Mini_courses.html#tidal-analysis-in-python)
     amp,pha = uptide.harmonic_analysis(tide, data['Sea Level'].to_numpy(), seconds_since)
     return amp, pha
 
 
 def get_longest_contiguous_data(filename):
     """"Finds the index positions of the boundaries of the largest NaN stretch"""
-# adding a pad with np.nan
+# (https://stackoverflow.com/questions/41494444/pandas-find-longest-stretch-without-nan-values)
     filename = np.append(np.nan, np.append(filename, np.nan))
 # finds where the null values are
     w = np.where(np.isnan(filename))[0]
@@ -140,6 +141,7 @@ if __name__ == '__main__':
 
 
 # Uses the glob module to pull in all the txt files in a directory given by the user
+# (https://builtin.com/software-engineering-perspectives/glob-in-python)
     all_files = glob.glob(str(dirname) + "/*.txt")
 
 
@@ -197,6 +199,7 @@ if __name__ == '__main__':
 
 # Calls the contiguous data function to get boundary indeces of longest contiguous data
 # Formats the returned data, to then output the longest contiguous dataset w/t NaNs
+# (https://stackoverflow.com/questions/23354115/printing-specific-parts-of-a-string-in-python)
     print ("--------------------")
     print ("Longest contiguous data: ")
     print (" ")
