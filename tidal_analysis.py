@@ -6,7 +6,6 @@
 import datetime
 import argparse
 import glob
-#import math
 from scipy.stats import linregress
 import matplotlib.dates as base_date
 import uptide
@@ -143,6 +142,7 @@ if __name__ == '__main__':
 # Uses the glob module to pull in all the txt files in a directory given by the user
     all_files = glob.glob(str(dirname) + "/*.txt")
 
+
 # Creates empty list to append to further on
     formatted_files = []
 # Iterates over the files, calling the read_tidal_data function to format the data,
@@ -151,39 +151,47 @@ if __name__ == '__main__':
         format_file = read_tidal_data(file)
         formatted_files.append(format_file)
 
+
 # Creates full_file - holding the joined data from the first two files in the directory
     full_file = join_data(formatted_files[0], formatted_files[1])
 # Iterates over the rest of the files, joining each file to full_file
-    for file in range (len(formatted_files)):   # noqa
+    for file in range (len(formatted_files)): # noqa: C0200
         full_file = join_data(full_file, formatted_files[file])
 
-# Outputs the station name based on which directory given by user
+
+# Outputs only the station name from the pathway given by user
     DIRECTORY = str(dirname)
     DIRECTORY = DIRECTORY[5:]
     print("---------------------")
     print ("Station Name: " + (DIRECTORY))
 
-# Outputs the Sea Level Rise stat in metres based on directory
+
+# Outputs the Sea Level Rise - p stat in metres based on directory
     print ("--------------------")
     print ("Sea Level Rise (m): ")
     print (sea_level_rise(full_file)[1])
 
-# Outputs the M2 amp stat in metres based on directory
+
+# Outputs only the amplitude of the M2 tidal analaysis
     print ("--------------------")
     print ("M2 amplitude (m): ")
     M2 = str(tidal_analysis(full_file, ['M2'], (datetime.datetime(2000,1,1,0,0,0))))
     print (M2[8:13])
 
-# Outputs the S2 amp stat in metres based on directory
+
+# Outputs only the amplitude of the S2 tidal analaysis
     print ("--------------------")
     print ("S2 Amplitude in (m): ")
     S2 = str(tidal_analysis(full_file, ['S2'], (datetime.datetime(2000,1,1,0,0,0))))
     print (S2[8:13])
 
+
 # Drops the time column (already have info in index)
     full_file = full_file.drop(columns = ['Time'])
 
-# Outputs longest contiguous data set based on directory
+
+# Calls the contiguous data function to get boundary indeces of longest contiguous data
+# Formats the returned data, to then output the longest contiguous dataset w/t NaNs
     print ("--------------------")
     print ("Longest contiguous data: ")
     print (" ")
