@@ -125,7 +125,7 @@ def get_longest_contiguous_data(filename):
 
 
 
-#if __name__ == '__main__':
+if __name__ == '__main__':
     parser = argparse.ArgumentParser(
                      prog="UK Tidal analysis",
                      description="Calculate tidal constiuents and RSL from tide gauge data",
@@ -142,54 +142,52 @@ def get_longest_contiguous_data(filename):
     verbose = args.verbose
 
 
-all_files = glob.glob('data/aberdeen/*.txt')
-#all_files = glob.glob(str(dirname) + "/*.txt")
-
-formatted_files = ()
-
-for file in all_files:
-    format_file = read_tidal_data(file)
-    print (format_file)
-    print ("----------------")
-    formatted_files = formatted_files.append(format_file)
-    #formatted_files = formatted_files.append(format_file)
+#all_files = glob.glob('data/aberdeen/*.txt')
+    all_files = glob.glob(str(dirname) + "/*.txt")
 
 
-#full_file = join_data(formatted_files[0], formatted_files[1])
+    formatted_files = []
+    for file in all_files:
+        format_file = read_tidal_data(file)
+        formatted_files.append(format_file)
 
-for file, formatted_files in enumerate(formatted_files):
-    full_file = join_data(full_file, formatted_files)
+
+    full_file = join_data(formatted_files[0], formatted_files[1])
+#numb = len(formatted_files)
+
+    for file in range (len(formatted_files)):
+        full_file = join_data(full_file, formatted_files[file])
 
 
-#directory = str(dirname)
-#directory = directory[5:]
-#print("---------------------")
-#print ("Station Name: " + (directory))
+    directory = str(dirname)
+    directory = directory[5:]
+    print("---------------------")
+    print ("Station Name: " + (directory))
 
-print ("--------------------")
-print ("Sea Level Rise (m): ")
-print (sea_level_rise(full_file)[1])
+    print ("--------------------")
+    print ("Sea Level Rise (m): ")
+    print (sea_level_rise(full_file)[1])
 
-print ("--------------------")
-print ("M2 amplitude (m): ")
-M2 = str(tidal_analysis(full_file, ['M2'], (datetime.datetime(2000,1,1,0,0,0))))
-print (M2[8:13])
+    print ("--------------------")
+    print ("M2 amplitude (m): ")
+    M2 = str(tidal_analysis(full_file, ['M2'], (datetime.datetime(2000,1,1,0,0,0))))
+    print (M2[8:13])
 
-print ("--------------------")
-print ("S2 Amplitude in (m): ")
-S2 = str(tidal_analysis(full_file, ['S2'], (datetime.datetime(2000,1,1,0,0,0))))
-print (S2[8:13])
+    print ("--------------------")
+    print ("S2 Amplitude in (m): ")
+    S2 = str(tidal_analysis(full_file, ['S2'], (datetime.datetime(2000,1,1,0,0,0))))
+    print (S2[8:13])
 
-full_file = full_file.drop(columns = ['Time'])
-print ("--------------------")
-print ("Longest contiguous data: ")
-print (" ")
-df = full_file['Sea Level']
-range_df = get_longest_contiguous_data(df)
-RANGE_DF_STR = str(range_df)
-RANGE_DF_STR = RANGE_DF_STR [1:-1]
-RANGE_DF_STR = RANGE_DF_STR.split()
-start_df = int(RANGE_DF_STR[0])
-end_df = int(RANGE_DF_STR[1])
-print (full_file[start_df:end_df])
-print("---------------------")
+    full_file = full_file.drop(columns = ['Time'])
+    print ("--------------------")
+    print ("Longest contiguous data: ")
+    print (" ")
+    df = full_file['Sea Level']
+    range_df = get_longest_contiguous_data(df)
+    RANGE_DF_STR = str(range_df)
+    RANGE_DF_STR = RANGE_DF_STR [1:-1]
+    RANGE_DF_STR = RANGE_DF_STR.split()
+    start_df = int(RANGE_DF_STR[0])
+    end_df = int(RANGE_DF_STR[1])
+    print (full_file[start_df:end_df])
+    print("---------------------")
