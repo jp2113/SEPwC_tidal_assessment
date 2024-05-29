@@ -125,14 +125,14 @@ def get_longest_contiguous_data(filename):
 
 
 
-if __name__ == '__main__':
+#if __name__ == '__main__':
     parser = argparse.ArgumentParser(
                      prog="UK Tidal analysis",
                      description="Calculate tidal constiuents and RSL from tide gauge data",
                      epilog="Copyright 2024, Joshua Proctor"
                      )
     parser.add_argument("directory",
-    help="the directory containing txt files with data")
+                        help="the directory containing txt files with data")
     parser.add_argument('-v', '--verbose',
                    action='store_true',
                     default=False,
@@ -142,16 +142,20 @@ if __name__ == '__main__':
     verbose = args.verbose
 
 
-#all_files = glob.glob('data/aberdeen/*.txt')
-all_files = glob.glob(str(dirname) + "/*.txt")
+all_files = glob.glob('data/aberdeen/*.txt')
+#all_files = glob.glob(str(dirname) + "/*.txt")
 
-formatted_files = []
+formatted_files = ()
 
 for file in all_files:
-    file = read_tidal_data(file)
-    formatted_files.append(file)
+    format_file = read_tidal_data(file)
+    print (format_file)
+    print ("----------------")
+    formatted_files = formatted_files.append(format_file)
+    #formatted_files = formatted_files.append(format_file)
 
-full_file = join_data(formatted_files[0], formatted_files[1])
+
+#full_file = join_data(formatted_files[0], formatted_files[1])
 
 for file, formatted_files in enumerate(formatted_files):
     full_file = join_data(full_file, formatted_files)
