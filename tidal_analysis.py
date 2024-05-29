@@ -152,12 +152,14 @@ if __name__ == '__main__':
         formatted_files.append(format_file)
 
 
-    full_file = join_data(formatted_files[0], formatted_files[1])
-#numb = len(formatted_files)
+    #full_file = join_data(formatted_files[0], formatted_files[1])
+    #for file in range (len(formatted_files)):
+    #    full_file = join_data(full_file, formatted_files[file])
 
-    for file in range (len(formatted_files)):
+    for file, full_file in enumerate(formatted_files):
         full_file = join_data(full_file, formatted_files[file])
 
+    print (full_file)
 
     DIRECTORY = str(dirname)
     DIRECTORY = DIRECTORY[5:]
