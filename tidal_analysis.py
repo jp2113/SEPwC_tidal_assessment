@@ -159,10 +159,10 @@ if __name__ == '__main__':
         full_file = join_data(full_file, formatted_files[file])
 
 
-    directory = str(dirname)
-    directory = directory[5:]
+    DIRECTORY = str(dirname)
+    DIRECTORY = DIRECTORY[5:]
     print("---------------------")
-    print ("Station Name: " + (directory))
+    print ("Station Name: " + (DIRECTORY))
 
     print ("--------------------")
     print ("Sea Level Rise (m): ")
