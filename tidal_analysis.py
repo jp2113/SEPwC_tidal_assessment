@@ -154,9 +154,14 @@ if __name__ == '__main__':
 
 # Creates full_file - holding the joined data from the first two files in the directory
     full_file = join_data(formatted_files[0], formatted_files[1])
+
+# Creates a counter to iterate the correct amount of times
+    COUNTER = 0
+
 # Iterates over the rest of the files, joining each file to full_file
-    for file in range (len(formatted_files)): # noqa: C0200
-        full_file = join_data(full_file, formatted_files[file])
+    while COUNTER < (len(formatted_files)):
+        full_file = join_data(full_file, formatted_files[COUNTER])
+        COUNTER = COUNTER + 1
 
 
 # Outputs only the station name from the pathway given by user
