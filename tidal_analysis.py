@@ -210,7 +210,7 @@ if __name__ == '__main__':
     RANGE_DF_STR = str(range_df)
     RANGE_DF_STR = RANGE_DF_STR [1:-1]
     RANGE_DF_STR = RANGE_DF_STR.split()
-# Sets start and end indices 
+# Sets start and end indices
     start_df = int(RANGE_DF_STR[0])
     end_df = int(RANGE_DF_STR[1])
     print (full_file[start_df:end_df])
