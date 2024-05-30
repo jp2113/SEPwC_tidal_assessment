@@ -116,11 +116,11 @@ def get_longest_contiguous_data(filename):
 # (https://stackoverflow.com/questions/41494444/pandas-find-longest-stretch-without-nan-values)
     filename = np.append(np.nan, np.append(filename, np.nan))
 # finds where the null values are
-    w = np.where(np.isnan(filename))[0]
+    position = np.where(np.isnan(filename))[0]
 # finds length of nan value stretches, and finds the largest one
-    a = np.diff(w).argmax()
+    largest_stretch = np.diff(position).argmax()
 # returns indeces of the boundary positions of the largest stretch
-    return w[[a, a + 1]] + np.array([0, -2])
+    return position[[largest_stretch, largest_stretch + 1]] + np.array([0, -2])
 
 
 if __name__ == '__main__':
