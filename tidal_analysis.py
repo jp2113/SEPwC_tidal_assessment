@@ -203,11 +203,14 @@ if __name__ == '__main__':
     print ("--------------------")
     print ("Longest contiguous data: ")
     print (" ")
+# Creates a dataframe only conatining the Sea Level column
     df = full_file['Sea Level']
     range_df = get_longest_contiguous_data(df)
+# Sets return of function to a string format, gets rid of '[]', and splits at space
     RANGE_DF_STR = str(range_df)
     RANGE_DF_STR = RANGE_DF_STR [1:-1]
     RANGE_DF_STR = RANGE_DF_STR.split()
+# Sets start and end indices 
     start_df = int(RANGE_DF_STR[0])
     end_df = int(RANGE_DF_STR[1])
     print (full_file[start_df:end_df])

@@ -127,7 +127,7 @@ class TestTidalAnalysis():
         data = join_data(data1, data2)
 
         slope, p_value = sea_level_rise(data)
-        #I have changed python value to 2.84 rather than 2.94 (which Jon told us we could!)
+        #I have changed python value to 2.84 rather than 2.94 (which Jon told us to do!)
         assert slope == pytest.approx(2.84e-05,abs=1e-7)
         assert p_value == pytest.approx(0.427,abs=0.1)
         
